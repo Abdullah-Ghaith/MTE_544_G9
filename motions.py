@@ -19,7 +19,7 @@ from rclpy.time import Time
 
 # You may add any other imports you may need/want to use below
 # import ...
-from rclpy.qos import ReliabilityPolicy, DurabilitPolicy
+from rclpy.qos import ReliabilityPolicy, DurabilityPolicy
 
 CIRCLE=0; SPIRAL=1; ACC_LINE=2
 motion_types=['circle', 'spiral', 'line']
@@ -102,10 +102,12 @@ class motion_executioner(Node):
 
     def laser_callback(self, laser_msg: LaserScan):
         # log laser msgs with position msg at that time
-        values_list = []
+
         # TODO populate values_list with laser msg values
 
         stamp = laser_msg.header.stamp.nanosec
+
+        values_list = [laser_msg.ranges, stamp]
 
         self.laser_logger.log_values(values_list)
 
