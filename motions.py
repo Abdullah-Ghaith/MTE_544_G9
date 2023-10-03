@@ -76,7 +76,7 @@ class motion_executioner(Node):
         acc_x = imu_msg.linear_acceleration.x
         acc_y = imu_msg.linear_acceleration.y
         angular_z = imu_msg.angular_velocity.z
-        stamp = imu_msg.header.stamp.nanosec
+        stamp = imu_msg.header.stamp.sec + imu_msg.header.stamp.nanosec / 1000000000
 
         values_list = [acc_x, acc_y, angular_z, stamp]
 
@@ -94,7 +94,7 @@ class motion_executioner(Node):
         quat_w = odom_msg.pose.pose.orientation.w
         quat = [quat_x, quat_y, quat_z, quat_w]
         th = euler_from_quaternion(quat)
-        stamp = odom_msg.header.stamp.nanosec
+        stamp = odom_msg.header.stamp.sec + odom_msg.header.stamp.nanosec / 1000000000
 
         values_list = [x, y, th, stamp]
 
@@ -105,9 +105,10 @@ class motion_executioner(Node):
 
         # TODO populate values_list with laser msg values
 
-        stamp = laser_msg.header.stamp.nanosec
+        ranges = laser_msg.ranges
+        stamp = laser_msg.header.stamp.sec + laser_msg.header.stamp.nanosec / 1000000000
 
-        values_list = [laser_msg.ranges, stamp]
+        values_list = [ranges, stamp]
 
         self.laser_logger.log_values(values_list)
 

@@ -92,5 +92,3 @@ def euler_from_quaternion(quat):
     yaw = atan2(siny_cosp, cosy_cosp) * 180 / M_PI # yaw in degrees
 
     return yaw
-
-
