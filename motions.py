@@ -1,6 +1,8 @@
 # Imports
 import rclpy
 
+from math import exp 
+
 from rclpy.node import Node
 
 from utilities import Logger, euler_from_quaternion
@@ -155,8 +157,10 @@ class motion_executioner(Node):
     def make_spiral_twist(self):
         msg=Twist()
         # fill up the twist msg for spiral motion
+        seconds = self.get_clock().now().nanoseconds/1000_000_000
+        
         msg.linear.x = 0.2
-        msg.angular.z = 0.2
+        msg.angular.z = 0.1*exp(seconds/-4) - 0.1
         return msg
 
     def make_acc_line_twist(self):
