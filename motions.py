@@ -54,17 +54,22 @@ class motion_executioner(Node):
         # IMU subscription
 
         self.create_subscription(Imu, "/imu", self.imu_callback, qos_profile=qos)
+        self.imu_initialized=True
 
         # ENCODER subscription
 
         self.create_subscription(Odometry, "/odom", self.odom_callback, qos_profile=qos)
+        self.odom_initialized=True
 
         # LaserScan subscription
 
         self.create_subscription(LaserScan, "/scan", self.laser_callback, qos_profile=qos)
+        self.laser_initialized=True
 
         self.create_timer(0.1, self.timer_callback)
 
+        if self.imu_initialized and self.odom_initialized and self.laser_initialized:
+        	self.successful_init=False
 
     # TODO Part 5: Callback functions: complete the callback functions of the three sensors to log the proper data.
     # You can save the needed fields into a list, and pass the list to the log_values function in utilities.py
@@ -158,7 +163,7 @@ class motion_executioner(Node):
         msg=Twist()
         # fill up the twist msg for line motion
         msg.linear.x = 0.2
-        msg.angular.z = 0
+        msg.angular.z = 0.0
         return msg
 
 import argparse
