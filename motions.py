@@ -160,7 +160,7 @@ class motion_executioner(Node):
         seconds = self.get_clock().now().nanoseconds/1000_000_000
         
         msg.linear.x = 0.2
-        msg.angular.z = 0.1*exp(seconds/-4) - 0.1
+        msg.angular.z = 0.1*exp(seconds/-4) + 0.1
         return msg
 
     def make_acc_line_twist(self):
