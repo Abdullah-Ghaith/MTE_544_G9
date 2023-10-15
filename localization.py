@@ -26,16 +26,22 @@ class localization(Node):
         
         if localizationType = rawSensor
         # TODO Part 3: subscribe to the position sensor topic (Odometry)
-        # ...
+            self.create_subscription(odom, "/odom", self.odom_callback, odom_qos)
         else:
             print("This type doesn't exist", sys.stderr)
     
     
-    def odom_callback(self, pose_msg):
+    def odom_callback(self, pose_msg: odom):
         
         # TODO Part 3: Read x,y, theta, and record the stamp
-        self.pose=[ ... ]
-        
+        quat_x = pose_msg.pose.pose.orientation.x
+        quat_y = pose_msg.pose.pose.orientation.y
+        quat_z = pose_msg.pose.pose.orientation.z
+        quat_w = pose_msg.pose.pose.orientation.w
+
+        stamp = pose_msg.header.stamp
+
+        self.pose = [ pose_msg.pose.pose.position.x, pose_msg.pose.pose.position.y, euler_from_quaternion([quat_x, quat_y, quat_z, quat_w]), stamp]
         # Log the data
         self.loc_logger.log_values([self.pose[0], self.pose[1], self.pose[2], Time.from_msg(self.pose[3]).nanoseconds])
     

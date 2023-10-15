@@ -24,14 +24,13 @@ class controller:
         e_lin=calculate_linear_error(pose, goal)
         e_ang=calculate_angular_error(pose, goal)
 
-
         linear_vel=self.PID_linear.update([e_lin, pose[3]], status)
         angular_vel=self.PID_angular.update([e_ang, pose[3]], status)
         
         # TODO Part 4: Add saturation limits for the robot linear and angular velocity
 
-        linear_vel = ... if linear_vel > 1.0 else linear_vel
-        angular_vel= ... if angular_vel > 1.0 else angular_vel
+        linear_vel = 0.31 if linear_vel > 0.31 else linear_vel # Tb4 specs say max linear velocity is 0.31 m/s in safe mode
+        angular_vel = 1.9 if angular_vel > 1.9 else angular_vel # Tb4 specs say max angular velocity is 1.9 rad/s
         
         return linear_vel, angular_vel
     
@@ -51,15 +50,14 @@ class trajectoryController(controller):
         
         e_lin=calculate_linear_error(pose, finalGoal)
         e_ang=calculate_angular_error(pose, goal)
-
         
         linear_vel=self.PID_linear.update([e_lin, pose[3]], status)
         angular_vel=self.PID_angular.update([e_ang, pose[3]], status) 
 
         # TODO Part 4: Add saturation limits for the robot linear and angular velocity
 
-        linear_vel = ... if linear_vel > ... else linear_vel
-        angular_vel= ... if angular_vel > ... else angular_vel
+        linear_vel = 0.31 if linear_vel > 0.31 else linear_vel # Tb4 specs say max linear velocity is 0.31 m/s in safe mode
+        angular_vel = 1.9 if angular_vel > 1.9 else angular_vel # Tb4 specs say max angular velocity is 1.9 rad/s
         
         return linear_vel, angular_vel
 

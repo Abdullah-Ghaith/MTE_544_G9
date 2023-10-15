@@ -1,8 +1,6 @@
 # Type of planner
 POINT_PLANNER=0; TRAJECTORY_PLANNER=1
 
-
-
 class planner:
     def __init__(self, type_):
 

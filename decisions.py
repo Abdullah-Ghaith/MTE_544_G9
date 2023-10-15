@@ -29,7 +29,7 @@ class decision_maker(Node):
         super().__init__("decision_maker")
 
         #TODO Part 4: Create a publisher for the topic responsible for robot's motion
-        self.publisher=... 
+        self.publisher = self.create_publisher(Twist, "/cmd_vel", 10)
 
         publishing_period=1/rate
         
@@ -70,11 +70,13 @@ class decision_maker(Node):
 
         vel_msg=Twist()
         
+        pose = self.localizer.getPose()
+
         # TODO Part 3: Check if you reached the goal
-        if type(self.goal) == list:
+        if type(self.goal) == list: # If goal is a list of goals (trajectory)
             reached_goal=...
-        else: 
-            reached_goal=...
+        else: # If goal is a single point
+            reached_goal = 1 if (pose[0] == self.goal[0] and pose[1] == self.goal[1] and pose[2] == self.goal[2]) else 0
         
 
         if reached_goal:
@@ -90,7 +92,11 @@ class decision_maker(Node):
         velocity, yaw_rate = self.controller.vel_request(self.localizer.getPose(), self.goal, True)
 
         #TODO Part 4: Publish the velocity to move the robot
-        ... 
+        vel_msg = Twist()
+        vel_msg.linear.x = velocity
+        vel_msg.angular.z = yaw_rate
+
+        self.publisher.publish(vel_msg)
 
 import argparse
 
