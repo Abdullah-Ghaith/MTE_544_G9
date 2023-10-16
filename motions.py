@@ -54,17 +54,14 @@ class motion_executioner(Node):
 
         # TODO Part 5: Create below the subscription to the topics corresponding to the respective sensors
         # IMU subscription
-
         self.create_subscription(Imu, "/imu", self.imu_callback, qos_profile=qos)
         self.imu_initialized=True
 
         # ENCODER subscription
-
         self.create_subscription(Odometry, "/odom", self.odom_callback, qos_profile=qos)
         self.odom_initialized=True
 
         # LaserScan subscription
-
         self.create_subscription(LaserScan, "/scan", self.laser_callback, qos_profile=qos)
         self.laser_initialized=True
 
@@ -77,22 +74,20 @@ class motion_executioner(Node):
     # You can save the needed fields into a list, and pass the list to the log_values function in utilities.py
 
     def imu_callback(self, imu_msg: Imu):
-        # log imu msgs
-
-        # TODO populate values_list with imu msg values
+        # Grab imu values
         acc_x = imu_msg.linear_acceleration.x
         acc_y = imu_msg.linear_acceleration.y
         angular_z = imu_msg.angular_velocity.z
         stamp = imu_msg.header.stamp.sec + imu_msg.header.stamp.nanosec / 1000000000
 
+        # Populate values_list with imu msg values
         values_list = [acc_x, acc_y, angular_z, stamp]
 
+        # Log imu msgs
         self.imu_logger.log_values(values_list)
 
     def odom_callback(self, odom_msg: Odometry):
-        # log odom msgs
-
-        # TODO populate values_list with odom msg values
+        # Get odometery valus
         x = odom_msg.pose.pose.position.x
         y = odom_msg.pose.pose.position.y
         quat_x = odom_msg.pose.pose.orientation.x
@@ -100,23 +95,27 @@ class motion_executioner(Node):
         quat_z = odom_msg.pose.pose.orientation.z
         quat_w = odom_msg.pose.pose.orientation.w
         quat = [quat_x, quat_y, quat_z, quat_w]
+        # Convert quaternion into euler angle
         th = euler_from_quaternion(quat)
+        
         stamp = odom_msg.header.stamp.sec + odom_msg.header.stamp.nanosec / 1000000000
 
+        # Populate values_list with odom msg values
         values_list = [x, y, th, stamp]
 
+        # Log odom msgs
         self.odom_logger.log_values(values_list)
 
     def laser_callback(self, laser_msg: LaserScan):
-        # log laser msgs with position msg at that time
 
-        # TODO populate values_list with laser msg values
-
+        # Grab laser range values
         ranges = laser_msg.ranges
         stamp = laser_msg.header.stamp.sec + laser_msg.header.stamp.nanosec / 1000000000
 
+        # Populate values_list with laser msg values
         values_list = [ranges, stamp]
 
+        # Log laser msgs with position msg at that time
         self.laser_logger.log_values(values_list)
 
     def timer_callback(self):
@@ -147,25 +146,26 @@ class motion_executioner(Node):
     # TODO Part 4: Motion functions: complete the functions to generate the proper messages corresponding to the desired motions of the robot
 
     def make_circular_twist(self):
-
+        # Fill up the twist msg for circular motion.
         msg=Twist()
-        # fill up the twist msg for circular motion
+        # A constant linear and angular velocity creates a circle.
         msg.linear.x = 0.2
         msg.angular.z = 0.4
         return msg
 
     def make_spiral_twist(self):
+        # Fill up the twist msg for spiral motion
         msg=Twist()
-        # fill up the twist msg for spiral motion
         seconds = self.get_clock().now().nanoseconds/1000_000_000
-        
+        # A constant linear and with a decreasing angular velocity with time creates a spiral.
         msg.linear.x = 0.2
         msg.angular.z = 0.1*exp(seconds/-4) + 0.1
         return msg
 
     def make_acc_line_twist(self):
+        # Fill up the twist msg for line motion
         msg=Twist()
-        # fill up the twist msg for line motion
+        # 0 angular velocity and constant linear velocity creates a straight line.
         msg.linear.x = 0.2
         msg.angular.z = 0.0
         return msg
