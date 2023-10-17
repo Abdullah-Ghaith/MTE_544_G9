@@ -113,7 +113,6 @@ def main(args=None):
     # Remember to define your QoS profile based on the information available in "ros2 topic info /odom --verbose" as explained in Tutorial 3
     odom_qos=QoSProfile(reliability=2, durability=2, history=1, depth=10)
     
-#publisher_msg, publishing_topic, qos_publisher, goalPoint, rate=10, motion_type=POINT_PLANNER
     # TODO Part 3: instantiate the decision_maker with the proper parameters for moving the robot
     if args.motion.lower() == "point":
         #TODO ask TA if there is meant to be an argument here or in localization for odom_qos
@@ -125,7 +124,7 @@ def main(args=None):
 
     try:
         spin(DM)
-    except SystemExit:
+    except (SystemExit, KeyboardInterrupt):
         print(f"reached there successfully {DM.localizer.pose}")
         DM.destroy_node()
         shutdown()
