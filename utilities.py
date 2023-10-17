@@ -118,12 +118,14 @@ def _normalize_angle(angle):
 #TODO Part 4: Implement the calculation of the angular error
 def calculate_angular_error(current_pose, goal_pose):
 
-    # Compute the linear error in x and y #TODO ask TA if this is meant to be angular error
+    # Compute the linear error in x and y
     # Remember that current_pose = [x,y, theta, time stamp] and goal_pose = [x,y,theta]
     # Remember that this function returns the difference in orientation between where the robot currently faces and where it should face to reach the goal
 
-    error_angular = goal_pose[2] - current_pose[2]
-    
+    goal_theta = atan2(goal_pose[1] - current_pose[1], goal_pose[0] - current_pose[0])
+    current_theta = _normalize_angle(current_pose[2])
+    error = goal_theta - current_theta
     # Remember to handle the cases where the angular error might exceed the range [-π, π]    
-    return _normalize_angle(error_angular)
-
+    error = _normalize_angle(error)
+    return error
+    
