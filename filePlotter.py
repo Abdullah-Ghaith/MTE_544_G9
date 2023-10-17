@@ -19,6 +19,9 @@ def plot_errors(filename):
     
     #plt.plot([lin[0] for lin in values], [lin[1] for lin in values])
     plt.legend()
+    plt.xlabel('X')
+    plt.ylabel('Y')
+    plt.
     plt.grid()
     plt.show()
     
