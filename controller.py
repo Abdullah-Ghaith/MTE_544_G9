@@ -29,8 +29,8 @@ class controller:
         
         # TODO Part 4: Add saturation limits for the robot linear and angular velocity
 
-        linear_vel = 0.31 if linear_vel > 0.31 else linear_vel # Tb4 specs say max linear velocity is 0.31 m/s in safe mode
-        angular_vel = 1.9 if angular_vel > 1.9 else angular_vel # Tb4 specs say max angular velocity is 1.9 rad/s
+        linear_vel = max(-0.31, min(0.31, linear_vel)) # Tb4 specs say max linear velocity is 0.31 m/s in safe mode
+        angular_vel = max(-1.9, min(1.9, angular_vel)) # Tb4 specs say max angular velocity is 1.9 rad/s
         
         return linear_vel, angular_vel
     
@@ -56,8 +56,8 @@ class trajectoryController(controller):
 
         # TODO Part 4: Add saturation limits for the robot linear and angular velocity
 
-        linear_vel = 0.31 if linear_vel > 0.31 else linear_vel # Tb4 specs say max linear velocity is 0.31 m/s in safe mode
-        angular_vel = 1.9 if angular_vel > 1.9 else angular_vel # Tb4 specs say max angular velocity is 1.9 rad/s
+        linear_vel = max(-0.31, min(0.31, linear_vel)) # Tb4 specs say max linear velocity is 0.31 m/s in safe mode
+        angular_vel = max(-1.9, min(1.9, angular_vel)) # Tb4 specs say max angular velocity is 1.9 rad/s
         
         return linear_vel, angular_vel
 

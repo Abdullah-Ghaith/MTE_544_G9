@@ -66,7 +66,7 @@ class PID_ctrl:
             # for example dt=0.1 overwriting the calculation          
             
             # TODO Part 5: calculate the error dot 
-            error_dot += (self.history[i][1] - self.history[i-1][1]) / dt # error derivative between two data points
+            error_dot += (self.history[i][0] - self.history[i-1][0]) / dt # error derivative between two data points
             
         error_dot/=len(self.history) # Averages error dot over all data points
         dt_avg/=len(self.history) # average dt for all data points
@@ -76,7 +76,6 @@ class PID_ctrl:
         for hist in self.history:
             # TODO Part 5: Gather the integration
             sum_ += hist[0]
-            pass
         
         error_int=sum_*dt_avg
         
@@ -89,13 +88,10 @@ class PID_ctrl:
         
         # TODO Part 5: Implement the control law corresponding to each type of controller
         elif self.type == PD:
-            pass
-            # return self.kp * latest_error + self.kv * error_dot # uncomment and remove 'pass' to use
+            return self.kp * latest_error + self.kv * error_dot 
         
         elif self.type == PI:
-            pass
-            # return self.kp * latest_error + self.ki * error_int # uncomment and remove 'pass' to use
+            return self.kp * latest_error + self.ki * error_int 
         
         elif self.type == PID:
-            pass
-            # return self.kp * latest_error + self.ki * error_int + self.kv * error_dot # uncomment and remove 'pass' to use
+            return self.kp * latest_error + self.ki * error_int + self.kv * error_dot 

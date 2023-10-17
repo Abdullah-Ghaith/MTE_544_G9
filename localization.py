@@ -7,24 +7,26 @@ from rclpy.node import Node
 from rclpy.qos import QoSProfile
 from nav_msgs.msg import Odometry as odom
 
-from rclpy import init, spin
+from rclpy import init, spin, shutdown
+from rclpy.qos import ReliabilityPolicy, DurabilityPolicy
 
 rawSensor = 0
 class localization(Node):
     
-    def __init__(self, localizationType=rawSensor):
+    def __init__(self, localizationType=rawSensor): #TODO ask TA if there is meant to be a argument here for odom_qos from decisions
 
         super().__init__("localizer")
         
         # TODO Part 3: Define the QoS profile variable based on whether you are using the simulation (Turtlebot 3 Burger) or the real robot (Turtlebot 4)
         # Remember to define your QoS profile based on the information available in "ros2 topic info /odom --verbose" as explained in Tutorial 3
 
-        odom_qos=...
+        #Currently in simulation config
+        odom_qos=QoSProfile(reliability=ReliabilityPolicy.RELIABLE, durability=DurabilityPolicy.VOLATILE, depth=10)
         
         self.loc_logger=Logger("robot_pose.csv", ["x", "y", "theta", "stamp"])
         self.pose=None
         
-        if localizationType = rawSensor
+        if localizationType == rawSensor:
         # TODO Part 3: subscribe to the position sensor topic (Odometry)
             self.create_subscription(odom, "/odom", self.odom_callback, odom_qos)
         else:
@@ -50,5 +52,13 @@ class localization(Node):
 
 # TODO Part 3
 # Here put a guard that makes the node run, ONLY when run as a main thread!
-
+if __name__ == '__main__':
+    init()
+    localization_node = localization(localizationType=rawSensor)
+    try:
+        spin(localization_node)
+    except KeyboardInterrupt:
+        pass
+    localization_node.destroy_node()
+    shutdown()
     
