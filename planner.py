@@ -14,7 +14,7 @@ class planner:
             return self.point_planner(goalPoint)
         
         elif self.type==TRAJECTORY_PLANNER:
-            return self.trajectory_planner()
+            return self.trajectory_planner() 
 
 
     def point_planner(self, goalPoint):
@@ -25,13 +25,27 @@ class planner:
 
     # TODO Part 6: Implement the trajectories here
     def trajectory_planner(self):
+        '''
+        The trajectory planner works by returning a list of points
+        that the robot should follow. The robot will move from the
+        first point in the list to the second, from the second to
+        the third, and so on.
+
+        The distance between each point in the list (and hence the granularity of the points composing the trajectory) in the list is set by the x_step var
+
+        Uncomment the lines 41-45 to use the trajectory planner
+        with the quadratic function instead of sigmoid and comment
+        out lines 49-54
+
         # Quadratic
         # goals = []
-        # x_step = 0.13
+        # x_step = 0.13 #
         # for i in range(10):
         #     goals.append([x_step*i, (x_step*i)**2])
         # return goals
-    
+        '''
+
+        # Sigmoid
         goals = []
         x_step = 0.22
         for i in range(20):
