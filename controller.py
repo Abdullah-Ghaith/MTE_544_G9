@@ -2,7 +2,7 @@ import numpy as np
 
 
 from pid import PID_ctrl
-from utilities import euler_from_quaternion, calculate_angular_error, calculate_linear_error
+from utilities import calculate_angular_error, calculate_linear_error
 
 M_PI=3.1415926535
 
@@ -21,14 +21,15 @@ class controller:
     
     def vel_request(self, pose, goal, status):
         
+        #calculate the error in linear and angular velocities
         e_lin=calculate_linear_error(pose, goal)
         e_ang=calculate_angular_error(pose, goal)
 
+        # Calculate the new desired linear and angular velocities from pose and errors
         linear_vel=self.PID_linear.update([e_lin, pose[3]], status)
         angular_vel=self.PID_angular.update([e_ang, pose[3]], status)
         
         # TODO Part 4: Add saturation limits for the robot linear and angular velocity
-
         linear_vel = max(-0.31, min(0.31, linear_vel)) # Tb4 specs say max linear velocity is 0.31 m/s in safe mode
         angular_vel = max(-1.9, min(1.9, angular_vel)) # Tb4 specs say max angular velocity is 1.9 rad/s
         
@@ -46,16 +47,18 @@ class trajectoryController(controller):
         
         goal=self.lookFarFor(pose, listGoals)
         
+        #final goal of trajectory is last set of points from list of goals
         finalGoal=listGoals[-1]
         
+        #calculate the error in linear and angular velocities
         e_lin=calculate_linear_error(pose, finalGoal)
         e_ang=calculate_angular_error(pose, goal)
         
+        # Calculate the new desired linear and angular velocities from pose and errors
         linear_vel=self.PID_linear.update([e_lin, pose[3]], status)
         angular_vel=self.PID_angular.update([e_ang, pose[3]], status) 
 
         # TODO Part 4: Add saturation limits for the robot linear and angular velocity
-
         linear_vel = max(-0.31, min(0.31, linear_vel)) # Tb4 specs say max linear velocity is 0.31 m/s in safe mode
         angular_vel = max(-1.9, min(1.9, angular_vel)) # Tb4 specs say max angular velocity is 1.9 rad/s
         
