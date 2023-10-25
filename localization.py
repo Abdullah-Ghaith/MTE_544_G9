@@ -8,7 +8,7 @@ from rclpy.qos import QoSProfile
 from nav_msgs.msg import Odometry as odom
 
 from rclpy import init, spin, shutdown
-from rclpy.qos import ReliabilityPolicy, DurabilityPolicy
+from rclpy.qos import ReliabilityPolicy, DurabilityPolicy, HistoryPolicy
 
 rawSensor = 0
 class localization(Node):
@@ -21,7 +21,7 @@ class localization(Node):
         # Remember to define your QoS profile based on the information available in "ros2 topic info /odom --verbose" as explained in Tutorial 3
 
         #Currently in simulation config
-        odom_qos=QoSProfile(reliability=ReliabilityPolicy.RELIABLE, durability=DurabilityPolicy.VOLATILE, depth=10)
+        odom_qos=QoSProfile(reliability=ReliabilityPolicy.BEST_EFFORT, durability=DurabilityPolicy.VOLATILE, depth=10)
         
         self.loc_logger=Logger("robot_pose.csv", ["x", "y", "theta", "stamp"])
         self.pose=None

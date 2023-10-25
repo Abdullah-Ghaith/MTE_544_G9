@@ -1,3 +1,4 @@
+import math
 # Type of planner
 POINT_PLANNER=0; TRAJECTORY_PLANNER=1
 
@@ -24,7 +25,21 @@ class planner:
 
     # TODO Part 6: Implement the trajectories here
     def trajectory_planner(self):
-        pass
+        # Quadratic
+        # goals = []
+        # x_step = 0.13
+        # for i in range(10):
+        #     goals.append([x_step*i, (x_step*i)**2])
+        # return goals
+    
+        goals = []
+        x_step = 0.22
+        for i in range(20):
+            x = x_step*i - 1.5
+            goals.append([x, 1/(1+math.exp(-1*(x/4)))])
+        return goals
+    
+
         # the return should be a list of trajectory points: [ [x1,y1], ..., [xn,yn]]
         # return 
 
