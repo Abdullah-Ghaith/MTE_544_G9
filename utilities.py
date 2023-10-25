@@ -89,7 +89,7 @@ def euler_from_quaternion(quat):
     Convert quaternion (w in last place) to euler roll, pitch, yaw.
     quat = [x, y, z, w]
     """
-
+    #From lab1
     siny_cosp = 2 * (quat[3] * quat[2] + quat[0] * quat[1])
     cosy_cosp = 1 - 2 * (quat[1] * quat[1] + quat[2] * quat[2])
 
@@ -108,6 +108,7 @@ def calculate_linear_error(current_pose, goal_pose):
     error_linear = sqrt((goal_pose[0] - current_pose[0])**2 + (goal_pose[1] - current_pose[1])**2)
     return error_linear
 
+# Helper function to normalize angles between [-π, π] when they exceed that range
 def _normalize_angle(angle):
     while angle > M_PI:
         angle -= 2 * M_PI
