@@ -13,14 +13,14 @@ from rclpy.qos import ReliabilityPolicy, DurabilityPolicy, HistoryPolicy
 rawSensor = 0
 class localization(Node):
     
-    def __init__(self, localizationType=rawSensor): #TODO ask TA if there is meant to be a argument here for odom_qos from decisions
+    def __init__(self, localizationType=rawSensor):
 
         super().__init__("localizer")
         
         # TODO Part 3: Define the QoS profile variable based on whether you are using the simulation (Turtlebot 3 Burger) or the real robot (Turtlebot 4)
         # Remember to define your QoS profile based on the information available in "ros2 topic info /odom --verbose" as explained in Tutorial 3
 
-        #Currently in simulation config
+        #Currently in real robot config
         odom_qos=QoSProfile(reliability=ReliabilityPolicy.BEST_EFFORT, durability=DurabilityPolicy.VOLATILE, depth=10)
         
         self.loc_logger=Logger("robot_pose.csv", ["x", "y", "theta", "stamp"])
@@ -53,12 +53,16 @@ class localization(Node):
 # TODO Part 3
 # Here put a guard that makes the node run, ONLY when run as a main thread!
 if __name__ == '__main__':
-    init()
-    localization_node = localization(localizationType=rawSensor)
+    init() 
+    # Create a localization node with the localization type set to rawSensor
+    localization_node = localization(localizationType=rawSensor) 
     try:
+        # Start the localization node
         spin(localization_node)
     except KeyboardInterrupt:
         pass
+
+    # Destroy the localization node explicitly 
     localization_node.destroy_node()
     shutdown()
     
