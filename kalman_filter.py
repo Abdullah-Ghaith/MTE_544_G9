@@ -10,17 +10,22 @@ class kalman_filter:
     # TODO Part 3: Initialize the covariances and the states    
     def __init__(self, P,Q,R, x, dt):
         
-        self.P=...
-        self.Q=...
-        self.R=...
-        self.x=...
-        self.dt = ...
+        self.P=P
+        self.Q=Q
+        self.R=R
+        self.x=x
+        '''
+            Robot state vector. [x,y,th,w,v,vdot]
+        '''
+        self.dt = dt
         
+
+
     # TODO Part 3: Replace the matrices with Jacobians where needed        
     def predict(self):
 
-        self.A = ...
-        self.C = ...
+        self.A = self.jacobian_A() #This is the Jacobian of G
+        self.C = self.jacobian_H() #This is the Jacobian of H
         
         self.motion_model()
         
@@ -40,24 +45,30 @@ class kalman_filter:
         
     
     # TODO Part 3: Implement here the measurement model
+    # NOTE Completed.
     def measurement_model(self):
         x, y, th, w, v, vdot = self.x
+        
+        # NOTE Do we need to integrate v?
+        # NOTE Are ax and ay correct or is the Jacobian wrong?
         return np.array([
-            ...,# v
-            ...,# w
-            ..., # ax
-            ..., # ay
+            v,# v
+            w,# w
+            vdot * np.cos(th), # ax
+            vdot * np.sin(th), # ay
         ])
         
     # TODO Part 3: Impelment the motion model (state-transition matrice)
+    # NOTE Completed.
     def motion_model(self):
         
         x, y, th, w, v, vdot = self.x
         dt = self.dt
         
+        # Numerically Integrate states based on linear acceleration and angular velocity. 
         self.x = np.array([
-            x + ... * np.cos(th) * dt,
-            y + ... * np.sin(th) * dt,
+            x + v * np.cos(th) * dt,
+            y + v * np.sin(th) * dt,
             th + w * dt,
             w,
             v  + vdot*dt,
@@ -66,19 +77,19 @@ class kalman_filter:
         
 
 
-    
+    # TODO Part 3: Implement the jacobian of the A matrix (motion)
     def jacobian_A(self):
         x, y, th, w, v, vdot = self.x
         dt = self.dt
         
         return np.array([
-            #x, y,               th, w,             v, vdot
-            [1, 0,              ..., 0,          ...,  0],
-            [0, 1,              ..., 0,          ...,  0],
-            [0, 0,                1, dt,           0,  0],
-            [0, 0,                0, 1,            0,  0],
-            [0, 0,                0, 0,            1,  dt],
-            [0, 0,                0, 0,            0,  1 ]
+            #x, y,               th,                  w,                    v,             vdot
+            [1, 0,              -v * np.sin(th) * dt, 0,                   np.cos(th) * dt, 0],
+            [0, 1,               v * np.cos(th) * dt, 0,                   np.sin(th) * dt, 0],
+            [0, 0,               1,                   dt,                  0,               0],
+            [0, 0,               0,                   1,                   0,               0],
+            [0, 0,               0,                   0,                   1,               dt],
+            [0, 0,               0,                   0,                   0,               1]
         ])
     
     
@@ -93,6 +104,13 @@ class kalman_filter:
             [0,0,0  , ..., ..., 0], # ay
         ])
         
+        # return np.array([
+        #     v,# v
+        #     w,# w
+        #     vdot * np.cos(th), # ax
+        #     vdot * np.sin(th), # ay
+        # ])
+        
     # TODO Part 3: return the states here    
     def get_states(self):
-        return ...
+        return self.x
