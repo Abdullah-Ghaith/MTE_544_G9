@@ -29,12 +29,12 @@ class kalman_filter:
         
         self.motion_model()
         
-        self.P= np.dot( np.dot(self.A, self.P), self.A.T) + self.Q
+        self.P= np.dot( np.dot(self.A, self.P), self.A.T) + self.R
 
     # TODO Part 3: Replace the matrices with Jacobians where needed
     def update(self, z):
 
-        S=np.dot(np.dot(self.C, self.P), self.C.T) + self.R
+        S=np.dot(np.dot(self.C, self.P), self.C.T) + self.Q
             
         kalman_gain=np.dot(np.dot(self.P, self.C.T), np.linalg.inv(S))
         
@@ -54,8 +54,8 @@ class kalman_filter:
         return np.array([
             v,# v
             w,# w
-            vdot * np.cos(th), # ax
-            vdot * np.sin(th), # ay
+            vdot, # ax
+            v*w, # ay
         ])
         
     # TODO Part 3: Impelment the motion model (state-transition matrice)
@@ -96,12 +96,15 @@ class kalman_filter:
     # TODO Part 3: Implement here the jacobian of the H matrix (measurements)    
     def jacobian_H(self):
         x, y, th, w, v, vdot=self.x
+
+        print(f"W:{w}")
+        print(f"V:{v}")
+        #x, y,th, w, v,vdot
         return np.array([
-            #x, y,th, w, v,vdot
             [0,0,0  , 0, 1, 0], # x
             [0,0,0  , 1, 0, 0], # y
             [0,0,0  , 0, 0, 1], # ax
-            [0,0,0  , ..., ..., 0], # ay
+            [0,0,0  , v, w, 0] # ay
         ])
         
         # return np.array([

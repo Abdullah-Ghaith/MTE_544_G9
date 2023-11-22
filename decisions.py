@@ -33,7 +33,7 @@ class decision_maker(Node):
 
 
         # TODO Part 3: use the Kalman Filter
-        self.localizer=localization(...)
+        self.localizer=localization(kalmanFilter, publishing_period)
         
         if motion_type==POINT_PLANNER:
             self.controller=controller(klp=0.2, klv=0.5, kap=0.8, kav=0.6)      
@@ -79,6 +79,8 @@ class decision_maker(Node):
             return
 
         
+
+        print(f"the pose vec {self.localizer.getPose()} vs {self.goal}")
         if type(self.goal) == list:
             reached_goal=True if calculate_linear_error(self.localizer.getPose(), self.goal[-1]) <self.reachThreshold else False
         else: 

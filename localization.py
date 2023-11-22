@@ -46,13 +46,11 @@ class localization(Node):
         
         # TODO Part 3: Set up the quantities for the EKF (hint: you will need the functions for the states and measurements)
         
-        x= np.zeroes((6,1)) # initial state assumed 0
+        x= np.zeros((6,)) # initial state assumed 0
         
-        # THIS IS ACTUALLY R IN THE NOTES
-        Q= 0.5 * np.eye(6) # process noise
+        Q= 0.5 * np.eye(4) # process noise
 
-        # THIS IS ACTUALLY Q IN THE NOTES
-        R= 0.5 * np.eye(4) # measurement noise
+        R= 0.4 * np.eye(6) # measurement noise
         
         # Definitely a 6X6
         P= np.eye(6) # initial covariance
@@ -60,8 +58,8 @@ class localization(Node):
         self.kf=kalman_filter(P,Q,R, x, dt)
         
         # TODO Part 3: Use the odometry and IMU data for the EKF
-        self.odom_sub=message_filters.Subscriber("/odom", odom) #(edited)
-        self.imu_sub=message_filters.Subscriber("/imu", Imu) #(edited)
+        self.imu_sub=message_filters.Subscriber(self, Imu, "/imu", qos_profile=odom_qos) #(edited)
+        self.odom_sub=message_filters.Subscriber(self, odom, "/odom", qos_profile=odom_qos) #(edited)
         
         time_syncher=message_filters.ApproximateTimeSynchronizer([self.odom_sub, self.imu_sub], queue_size=10, slop=0.1)
         time_syncher.registerCallback(self.fusion_callback)
@@ -83,11 +81,11 @@ class localization(Node):
         xhat=self.kf.get_states()
 
         # Update the pose estimate to be returned by getPose
-        self.pose=np.array(xhat[:3])
+        self.pose = [xhat[0], xhat[1], xhat[2], odom_msg.header.stamp]
         x, y, th, w, v, vdot = xhat
         # ["imu_ax", "imu_ay", "kf_ax", "kf_ay","kf_v","kf_w","kf_x", "kf_y","stamp"]
         # TODO Part 4: log your data
-        self.loc_logger.log_values([imu_msg.linear_acceleration.x, imu_msg.linear_acceleration.y, vdot*np.cos(th), vdot*np.sin(th), v, w, x, y, odom_msg.header.stamp]) #(edited)
+        self.loc_logger.log_values([imu_msg.linear_acceleration.x, imu_msg.linear_acceleration.y, vdot, w*v, v, w, x, y, Time.from_msg(odom_msg.header.stamp).nanoseconds]) #(edited)
       
     def odom_callback(self, pose_msg):
         
