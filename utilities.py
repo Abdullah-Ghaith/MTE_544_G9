@@ -119,7 +119,6 @@ def calculate_angular_error(current_pose, goal_pose):
     if error_angular <= -M_PI:
         error_angular += 2*M_PI
     
-    
     elif error_angular >= M_PI:
         error_angular -= 2*M_PI
     
