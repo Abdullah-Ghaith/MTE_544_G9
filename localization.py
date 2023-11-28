@@ -73,9 +73,9 @@ class localization(Node):
             
             # TODO PART 5 Bonus put the Q and R matrices
             # that you conclude from lab Three
-            Q=...
-            R=...
-            P=...
+            Q = 0.5 * np.eye(4) # process noise
+            R = 0.4 * np.eye(6) # measurement noise
+            P = np.eye(6) # initial covariance
                         
             self.kf=kalman_filter(P,Q,R, x)
             
