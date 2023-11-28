@@ -27,11 +27,11 @@ class kalman_filter:
         
         self.motion_model()
         
-        self.P= np.dot( np.dot(self.A, self.P), self.A.T) + self.Q
+        self.P= np.dot( np.dot(self.A, self.P), self.A.T) + self.R
     
     def update(self, z):
 
-        S=np.dot(np.dot(self.C, self.P), self.C.T) + self.R
+        S=np.dot(np.dot(self.C, self.P), self.C.T) + self.Q
             
         kalman_gain=np.dot(np.dot(self.P, self.C.T), np.linalg.inv(S))
         
