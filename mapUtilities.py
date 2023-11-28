@@ -153,7 +153,7 @@ class mapManipulator(Node):
         return self.o_x + i*self.getResolution(),    (self.height - j) * self.getResolution()  + self.o_y  
     
     
-    def position_2_cell(self, pos):
+    def position_2_cell(self, pos) -> tuple[int, int]:
         x,y = pos
         return floor( (-self.o_x + x)/self.getResolution()), -floor( -self.height + (-self.o_y + y)/self.getResolution() )
 

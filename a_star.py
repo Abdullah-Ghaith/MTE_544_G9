@@ -43,8 +43,13 @@ def return_path(current_node,maze):
 
     return path
 
+def manhattan_cost(node: Node, end_node: Node) -> float:
+    return abs(node.position[0]-end_node.position[0])+abs(node.position[1]-end_node.position[1])
 
-def search(maze, start, end):
+def euclidian_cost(node: Node, end_node: Node) -> float:
+    return sqrt((node.position[0]-end_node.position[0])**2+(node.position[1]-end_node.position[1])**2)
+
+def search(maze, start, end, heuristic_type = 'euclidean'):
 
     print("searching ....")
 
@@ -61,16 +66,16 @@ def search(maze, start, end):
     """
 
     # TODO PART 4 Create start and end node with initized values for g, h and f
-    start_node = Node(...)
-    start_node.g = ...
-    start_node.h = ...
-    start_node.f = ...
+    start_node = Node(parent = None, position=start)
+    start_node.g = 0#TODO check with TAs
+    start_node.h = 0
+    start_node.f = start_node.g + start_node.h
 
     
-    end_node = Node(...)
-    end_node.g = ...
-    end_node.h = ...
-    end_node.f = ...
+    end_node = Node(parent=None, position=end)
+    end_node.g = 0 #TODO is this right?
+    end_node.h = 0
+    end_node.f = end_node.g + end_node.h
 
     # Initialize both yet_to_visit and visited list
     # in this list we will put all node that are yet_to_visit for exploration. 
@@ -90,15 +95,14 @@ def search(maze, start, end):
     
     # TODO PART 4 what squares do we search . serarch movement is left-right-top-bottom 
     #(4 movements) from every positon
-    move  =  [[...], # go up
-              [...], # go left
-              [...], # go down
-              [...], # go right
-              [...], # go up left
-              [...], # go down left
-              [...], # go up right
-              [...]] # go down right
-
+    move  =  [[-1, 0 ], # go up
+              [ 0, -1], # go left
+              [ 1, 0 ], # go down
+              [ 0, 1 ], # go right
+              [-1, -1], # go up left
+              [ 1, -1], # go down left
+              [-1, 1 ], # go up right
+              [ 1, 1 ]] # go down right
 
     """
         1) We first get the current node by comparing all f cost and selecting the lowest cost node for further expansion
@@ -118,7 +122,7 @@ def search(maze, start, end):
                 d) else move the child to yet_to_visit list
     """
     # TODO PART 4 find maze has got how many rows and columns 
-    no_rows, no_columns = ...
+    no_rows, no_columns = np.shape(maze)
     
 
     # Loop until you find the end
@@ -149,22 +153,23 @@ def search(maze, start, end):
 
         # test if goal is reached or not, if yes then return the path
         if current_node == end_node:
-
             return return_path(current_node,maze)
 
         # Generate children from all adjacent squares
-        children = []
+        children: list[Node] = []
 
         for new_position in move: 
 
             # TODO PART 4 Get node position
-            node_position = (...)
+            node_position = (current_node.position[0] + new_position[0], current_node.position[1] + new_position[1])
 
             # TODO PART 4 Make sure within range (check if within maze boundary)
-            if (...):
+            if (node_position[0] > (no_rows-1) or 
+                node_position[0] < 0 or 
+                node_position[1] > (no_columns-1) or 
+                node_position[1] < 0):
                 continue
 
-            # Make sure walkable terrain
             if maze[node_position[0],node_position[1]] > 0.8:
                 continue
 
@@ -179,13 +184,19 @@ def search(maze, start, end):
         for child in children:
   
             # TODO PART 4 Child is on the visited list (search entire visited list)
-            if len(...) > 0:
+            if len([visited_child for visited_child in visited_list if visited_child == child]) > 0:
                 continue
 
             # TODO PART 4 Create the f, g, and h values
-            child.g = ...
+            if child.parent != None:
+                child.g = child.parent.g + 1 #TODO do we only add 1?
+            else:
+                child.g = 0
             ## Heuristic costs calculated here, this is using eucledian distance
-            child.h = ...
+            if heuristic_type == "euclidean":
+                child.h = euclidian_cost(child, end_node)
+            else:
+                child.h = manhattan_cost(child, end_node)
 
             child.f = child.g + child.h
 
