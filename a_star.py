@@ -188,10 +188,8 @@ def search(maze, start, end, heuristic_type = 'euclidean'):
                 continue
 
             # TODO PART 4 Create the f, g, and h values
-            if child.parent != None:
-                child.g = child.parent.g + 1 #TODO do we only add 1?
-            else:
-                child.g = 0
+            child.g = child.parent.g + 1 #TODO do we only add 1?
+            
             ## Heuristic costs calculated here, this is using eucledian distance
             if heuristic_type == "euclidean":
                 child.h = euclidian_cost(child, end_node)

@@ -46,7 +46,7 @@ class decision_maker(Node):
         self.reachThreshold= 0.1 #TODO what do we choose?
 
         # TODO PART 5 your localization type
-        self.localizer=localization(type=kalmanFilter)
+        self.localizer=localization(type=rawSensors)
         
         if motion_type==POINT_PLANNER:
             self.controller=controller(klp=0.2, klv=0.5, kap=0.8, kav=0.6)      
