@@ -43,9 +43,11 @@ class decision_maker(Node):
         publishing_period=1/rate
 
         # TODO PART 5 choose your threshold
-        self.reachThreshold= 0.1 #TODO what do we choose?
+        # This is the threshold for reaching a goal or a waypoint. If the robot is within this distance to the goal, it is considered to have reached the goal.
+        self.reachThreshold= 0.1 
 
         # TODO PART 5 your localization type
+        # This is the initialization of the localization system. The type of localization (e.g., raw sensors, Kalman filter, etc.) is passed as an argument.
         self.localizer=localization(type=rawSensors)
         
         if motion_type==POINT_PLANNER:
@@ -55,6 +57,7 @@ class decision_maker(Node):
         
         elif motion_type==TRAJECTORY_PLANNER:
             # TODO PART 5 Bonus Put the gains that you conclude from lab 2
+            # Lab 2 gains
             self.controller=trajectoryController(klp=2.0, klv=0.9, kli= 0.015, kap=0.8, kav=0.6, kai= 0.01)      
             self.planner=planner(TRAJECTORY_PLANNER)
         
