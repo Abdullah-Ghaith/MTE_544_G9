@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from math import sqrt
 
-
+#Node class for A* pathfinding
 class Node:
     """
         A node class for A* Pathfinding
@@ -20,60 +20,71 @@ class Node:
         self.g = 0
         self.h = 0
         self.f = 0
+    #Use to compare nodes
     def __eq__(self, other):
-        return self.position == other.position
+        return self.position == other.position #Nodes are equal if their position in the maze is the equal
 
 #This function return the path of the search
 def return_path(current_node,maze):
+    # Initialize an empty path list
     path = []
+    
+    # Get the shape of the maze
     no_rows, no_columns = np.shape(maze)
-    # here we create the initialized result maze with -1 in every position
+    
+    # Initialize the result maze with -1 in every position
     result = [[-1 for i in range(no_columns)] for j in range(no_rows)]
+    
+    # Set the current node
     current = current_node
+    
+    # Traverse the path from the current node to the root (start node)
     while current is not None:
+        # Append the current node's position to the path list
         path.append(current.position)
+        
+        # Move to the parent node
         current = current.parent
-    # Return reversed path as we need to show from start to end path
+    
+    # Reverse the path list to get the path from start to end
     path = path[::-1]
+    
+    # Initialize the start value
     start_value = 0
-    # we update the path of start to end found by A-star serch with every step incremented by 1
+    
+    # Update the result maze with the path found by A-star search
+    # Each step in the path is incremented by 1
     for i in range(len(path)):
         result[path[i][0]][path[i][1]] = start_value
         start_value += 1
 
+    # Return the path
     return path
 
 def manhattan_cost(node: Node, end_node: Node) -> float:
+    # The Manhattan cost is the sum of the absolute differences of the Cartesian coordinates
+    # It represents the minimum cost to reach the end node from the current node when only orthogonal (vertical and horizontal) movements are allowed
     return abs(node.position[0]-end_node.position[0])+abs(node.position[1]-end_node.position[1])
 
 def euclidian_cost(node: Node, end_node: Node) -> float:
+    # The Euclidean cost is the square root of the sum of the squares of the differences of the Cartesian coordinates
     return sqrt((node.position[0]-end_node.position[0])**2+(node.position[1]-end_node.position[1])**2)
 
 def search(maze, start, end, heuristic_type = 'euclidean'):
 
     print("searching ....")
 
+    # Transpose the maze to align with the coordinate system
     maze = maze.T
-    
-    
-    """
-        Returns a list of tuples as a path from the given start to the given end in the given maze
-        :param maze:
-        :param cost
-        :param start:
-        :param end:
-        :return:
-    """
 
-    # TODO PART 4 Create start and end node with initized values for g, h and f
+    # Create start and end node with initialized values for g, h and f
     start_node = Node(parent = None, position=start)
-    start_node.g = 0#TODO check with TAs
+    start_node.g = 0
     start_node.h = 0
     start_node.f = start_node.g + start_node.h
 
-    
     end_node = Node(parent=None, position=end)
-    end_node.g = 0 #TODO is this right?
+    end_node.g = 0
     end_node.h = 0
     end_node.f = end_node.g + end_node.h
 
@@ -83,16 +94,13 @@ def search(maze, start, end, heuristic_type = 'euclidean'):
     yet_to_visit_list = []  
     # in this list we will put all node those already explored so that we don't explore it again
     visited_list = [] 
-    
+
     # Add the start node
     yet_to_visit_list.append(start_node)
-    
-    # Adding a stop condition. This is to avoid any infinite loop and stop 
-    # execution after some reasonable number of steps
+
+    # Adding a stop condition to avoid any infinite loop
     outer_iterations = 0
     max_iterations = (len(maze) // 2) ** 10
-
-    
     # TODO PART 4 what squares do we search . serarch movement is left-right-top-bottom 
     #(4 movements) from every positon
     move  =  [[-1, 0 ], # go up
@@ -121,18 +129,14 @@ def search(maze, start, end, heuristic_type = 'euclidean'):
                 c) if child in yet_to_visit list then ignore it
                 d) else move the child to yet_to_visit list
     """
-    # TODO PART 4 find maze has got how many rows and columns 
+    # Get the size of the maze
     no_rows, no_columns = np.shape(maze)
-    
 
     # Loop until you find the end
-    
     while len(yet_to_visit_list) > 0:
-        
         # Every time any node is referred from yet_to_visit list, counter of limit operation incremented
         outer_iterations += 1    
 
-        
         # Get the current node
         current_node = yet_to_visit_list[0]
         current_index = 0
@@ -141,8 +145,8 @@ def search(maze, start, end, heuristic_type = 'euclidean'):
                 current_node = item
                 current_index = index
                 
-        # if we hit this point return the path such as it may be no solution or 
-        # computation cost is too high
+        # If max iterations reached, return the path
+        #such as it may be no solution or computation cost is too high
         if outer_iterations > max_iterations:
             print ("giving up on pathfinding too many iterations")
             return return_path(current_node,maze)
@@ -151,7 +155,7 @@ def search(maze, start, end, heuristic_type = 'euclidean'):
         yet_to_visit_list.pop(current_index)
         visited_list.append(current_node)
 
-        # test if goal is reached or not, if yes then return the path
+        # If goal is reached, return the path
         if current_node == end_node:
             return return_path(current_node,maze)
 
@@ -170,6 +174,7 @@ def search(maze, start, end, heuristic_type = 'euclidean'):
                 node_position[1] < 0):
                 continue
 
+            # Ignore nodes that are obstacles
             if maze[node_position[0],node_position[1]] > 0.8:
                 continue
 
@@ -180,17 +185,16 @@ def search(maze, start, end, heuristic_type = 'euclidean'):
             children.append(new_node)
 
         # Loop through children
-        
         for child in children:
-  
-            # TODO PART 4 Child is on the visited list (search entire visited list)
+
+            # TODO PART 4 If child is on the visited list, ignore it
             if len([visited_child for visited_child in visited_list if visited_child == child]) > 0:
                 continue
 
             # TODO PART 4 Create the f, g, and h values
-            child.g = child.parent.g + 1 #TODO do we only add 1?
+            child.g = child.parent.g + 1
             
-            ## Heuristic costs calculated here, this is using eucledian distance
+            # Heuristic costs calculated here
             if heuristic_type == "euclidean":
                 child.h = euclidian_cost(child, end_node)
             else:
@@ -198,7 +202,7 @@ def search(maze, start, end, heuristic_type = 'euclidean'):
 
             child.f = child.g + child.h
 
-            # Child is already in the yet_to_visit list and g cost is already lower
+            # If child is already in the yet_to_visit list and g cost is already lower, ignore it
             if len([i for i in yet_to_visit_list if child == i and child.g >= i.g]) > 0:
                 continue
 
